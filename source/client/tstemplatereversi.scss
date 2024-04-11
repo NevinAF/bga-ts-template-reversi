@@ -26,6 +26,17 @@
 	height: 62px;
 	// Position relative to the board, not affected by other elements.
 	position: absolute;
-	// Placeholder for validating the positions.
-	background-color: red;
 }
+
+// Same as square, but matching the token size/image.
+.token {
+	width: 56px;
+	height: 56px;
+	position: absolute;
+	background-image: url('img/tokens.png');
+}
+
+// For clarity, but doesn't actually do anything.
+.tokencolor_cbcbcb { background-position: 0px 0px; }
+// Translate the background the exact size of the white token, so the black one shows instead.
+.tokencolor_363636 { background-position: -56px 0px; }

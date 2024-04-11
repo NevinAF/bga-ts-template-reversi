@@ -20,14 +20,8 @@
 
 <script type="text/javascript">
 
-// Javascript HTML templates
+var jstpl_token='<div class="token tokencolor_${color}" id="token_${x_y}"></div>';
 
-/*
-// Example:
-var jstpl_some_game_item='<div class="my_game_item" id="my_game_item_${MY_ITEM_ID}"></div>';
-
-*/
-
-</script>  
+</script>
 
 {OVERALL_GAME_FOOTER}

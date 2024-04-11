@@ -24,5 +24,19 @@
   width: 62px;
   height: 62px;
   position: absolute;
-  background-color: red;
+}
+
+.token {
+  width: 56px;
+  height: 56px;
+  position: absolute;
+  background-image: url("img/tokens.png");
+}
+
+.tokencolor_cbcbcb {
+  background-position: 0px 0px;
+}
+
+.tokencolor_363636 {
+  background-position: -56px 0px;
 }
