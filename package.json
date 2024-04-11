@@ -1,0 +1,11 @@
+{
+	"scripts": {
+		"init": "npm install bga-ts-template && npx bga-init TSTemplateReversi \"Nevin Foster, nevin.foster2@gmail.com\" source --typescript --scss --vscode-extension-pack --php-8.2 --gameinfos.jsonc --gameoptions.jsonc --gamepreferences.jsonc --stats.jsonc --gamestates.jsonc",
+		"build": "npx bga-build",
+		"watch": "npx bga-build --watch"
+	},
+	"dependencies": {
+		"bga-ts-template": "^1.1.3",
+		"sass": "^1.74.1"
+	}
+}
