@@ -48,40 +48,18 @@ class TSTemplateReversi extends Gamegui
 	onEnteringState(stateName: GameStateName, args: CurrentStateArgs): void
 	{
 		console.log( 'Entering state: '+stateName );
-		
-		switch( stateName )
-		{
-		case 'dummmy':
-			break;
-		}
 	}
 
 	/** @gameSpecific See {@link Gamegui.onLeavingState} for more information. */
 	onLeavingState(stateName: GameStateName): void
 	{
 		console.log( 'Leaving state: '+stateName );
-		
-		switch( stateName )
-		{
-		case 'dummmy':
-			break;
-		}
 	}
 
 	/** @gameSpecific See {@link Gamegui.onUpdateActionButtons} for more information. */
 	onUpdateActionButtons(stateName: GameStateName, args: AnyGameStateArgs | null): void
 	{
 		console.log( 'onUpdateActionButtons: ' + stateName, args );
-
-		if(!this.isCurrentPlayerActive())
-			return;
-
-		switch( stateName )
-		{
-		case 'dummmy':
-			// Add buttons if needed
-			break;
-		}
 	}
 
 	///////////////////////////////////////////////////

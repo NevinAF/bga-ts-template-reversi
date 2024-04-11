@@ -34,26 +34,12 @@ define("bgagame/tstemplatereversi", ["require", "exports", "ebg/core/gamegui", "
         };
         TSTemplateReversi.prototype.onEnteringState = function (stateName, args) {
             console.log('Entering state: ' + stateName);
-            switch (stateName) {
-                case 'dummmy':
-                    break;
-            }
         };
         TSTemplateReversi.prototype.onLeavingState = function (stateName) {
             console.log('Leaving state: ' + stateName);
-            switch (stateName) {
-                case 'dummmy':
-                    break;
-            }
         };
         TSTemplateReversi.prototype.onUpdateActionButtons = function (stateName, args) {
             console.log('onUpdateActionButtons: ' + stateName, args);
-            if (!this.isCurrentPlayerActive())
-                return;
-            switch (stateName) {
-                case 'dummmy':
-                    break;
-            }
         };
         TSTemplateReversi.prototype.addTokenOnBoard = function (x, y, player_id) {
             var player = this.gamedatas.players[player_id];

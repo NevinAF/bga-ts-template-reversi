@@ -18,7 +18,7 @@ declare(strict_types=1);
  */
 if (false) {
 	/** @var tstemplatereversi $game */
-	
+	$game->stNextPlayer();
 }
 
 $machinestates = array(
@@ -28,19 +28,32 @@ $machinestates = array(
 		'type' => 'manager',
 		'action' => 'stGameSetup',
 		'transitions' => array(
-			'' => 2,
+			'' => 10,
 		),
 	),
-	2 => array(
-		'name' => 'dummmy',
-		'description' => clienttranslate('${actplayer} must play a card or pass'),
-		'descriptionmyturn' => clienttranslate('${you} must play a card or pass'),
+	10 => array(
+		'name' => 'playerTurn',
+		'description' => clienttranslate('${actplayer} must play a disc'),
+		'descriptionmyturn' => clienttranslate('${you} must play a disc'),
 		'type' => 'activeplayer',
-		'possibleactions' => ['playCard', 'pass'],
+		'args' => 'argPlayerTurn',
+		'possibleactions' => ['playDisc'],
 		'transitions' => array(
-			'playCard' => 2,
-			'pass' => 2,
+			'playDisc' => 11,
+			'zombiePass' => 11,
 		),
+	),
+	11 => array(
+		'name' => 'nextPlayer',
+		'type' => 'game',
+		'action' => 'stNextPlayer',
+		'updateGameProgression' => true,
+		'transitions' => array(
+			'nextTurn' => 10,
+			'cantPlay' => 11,
+			'endGame' => 99,
+		),
+		'description' => '',
 	),
 	99 => array(
 		'name' => 'gameEnd',

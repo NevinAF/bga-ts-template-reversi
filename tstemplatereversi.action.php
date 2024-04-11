@@ -27,22 +27,16 @@ class action_tstemplatereversi extends APP_GameAction
 		}
 	}
 
-	public function playCard()
+	public function playDisc()
 	{
 		self::setAjaxMode();
 
-		/** @var int $card_id */
-		$card_id = self::getArg('card_id', AT_int, true);
+		/** @var int $x */
+		$x = self::getArg('x', AT_int, true);
+		/** @var int $y */
+		$y = self::getArg('y', AT_int, true);
 
-		$this->game->playCard( $card_id );
-		self::ajaxResponse();
-	}
-
-	public function pass()
-	{
-		self::setAjaxMode();
-
-		$this->game->pass(  );
+		$this->game->playDisc( $x, $y );
 		self::ajaxResponse();
 	}
 }
