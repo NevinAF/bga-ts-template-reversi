@@ -15,16 +15,16 @@
 	"$schema": "../../node_modules/bga-ts-template/schema/gameinfos.schema.json",
 
 	// Game Externals and basic information
-	"game_name": "My Great Game",
-	"publisher": "My Publishing Company",
-	"publisher_website": "http://www.mypublishingcompany.com/",
+	"game_name": "Othello",
+	"publisher": "",
+	"publisher_website": "",
 	"publisher_bgg_id": 1234,
 	"bgg_id": 2389,
 
 	// Players
-	"players": [2, 3, 4],
-	"player_colors": ["ff0000", "008000", "0000ff", "ffa500", "773300"],
-	"favorite_colors_support": true,
+	"players": [ 2 ],
+	"player_colors": [ "cbcbcb", "363636" ],
+	"favorite_colors_support": false,
 	"suggest_player_number": null,
 	"not_recommend_player_number": null,
 	"disable_player_order_swap_on_rematch": false,
