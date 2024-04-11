@@ -3,30 +3,19 @@
 <!-- 
 --------
 -- BGA framework: Gregory Isabelli & Emmanuel Colin & BoardGameArena
--- TSTemplateReversi implementation : © <Your name here> <Your email address here>
+-- TSTemplateReversi implementation : © Nevin Foster, nevin.foster2@gmail.com
 -- 
 -- This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
 -- See http://en.boardgamearena.com/#!doc/Studio for more information.
--------
-
-    tstemplatereversi_tstemplatereversi.tpl
-    
-    This is the HTML template of your game.
-    
-    Everything you are writing in this file will be displayed in the HTML page of your game user interface,
-    in the "main game zone" of the screen.
-    
-    You can use in this template:
-    _ variables, with the format {MY_VARIABLE_ELEMENT}.
-    _ HTML block, with the BEGIN/END format
-    
-    See your "view" PHP file to check how to set variables and control blocks
-    
-    Please REMOVE this comment before publishing your game on BGA
+--------
 -->
 
 
-This is your game interface. You can edit this HTML in your ".tpl" file.
+<div id="board">
+	<!-- BEGIN square -->
+	<div id="square_{X}_{Y}" class="square" style="left: {LEFT}px; top: {TOP}px;"></div>
+	<!-- END square -->
+</div>
 
 
 <script type="text/javascript">
