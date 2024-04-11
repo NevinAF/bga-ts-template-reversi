@@ -25,8 +25,11 @@ define("bgagame/tstemplatereversi", ["require", "exports", "ebg/core/gamegui", "
         }
         TSTemplateReversi.prototype.setup = function (gamedatas) {
             console.log("Starting game setup");
-            this.addTokenOnBoard(2, 2, this.player_id);
-            this.addTokenOnBoard(6, 3, this.player_id);
+            for (var i in gamedatas.board) {
+                var square = gamedatas.board[i];
+                if (square === null || square === void 0 ? void 0 : square.player)
+                    this.addTokenOnBoard(square.x, square.y, square.player);
+            }
             this.setupNotifications();
         };
         TSTemplateReversi.prototype.onEnteringState = function (stateName, args) {

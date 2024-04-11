@@ -74,21 +74,32 @@ class TSTemplateReversi extends Table
         }
         $sql .= implode( ',', $values );
         self::DbQuery( $sql );
-        self::reattributeColorsBasedOnPreferences( $players, $gameinfos['player_colors'] );
+        // self::reattributeColorsBasedOnPreferences( $players, $gameinfos['player_colors'] );
         self::reloadPlayersBasicInfos();
         
         /************ Start the game initialization *****/
 
-        // Init global values with their initial values
-        //self::setGameStateInitialValue( 'my_first_global_variable', 0 );
-        
-        // Init game statistics
-        // (note: statistics used in this file must be defined in your stats.inc.php file)
-        //self::initStat( 'table', 'table_teststat1', 0 );    // Init a table statistics
-        //self::initStat( 'player', 'player_teststat1', 0 );  // Init a player statistics (for all players)
-
-        // TODO: setup the initial game situation here
-       
+		$sql = "INSERT INTO board (board_x,board_y,board_player) VALUES ";
+		$sql_values = array();
+		list( $whiteplayer_id, $blackplayer_id ) = array_keys( $players );
+		for( $x=1; $x<=8; $x++ )
+		{
+			for( $y=1; $y<=8; $y++ )
+			{
+				// Initial positions of white player
+				if( ($x==4 && $y==4) || ($x==5 && $y==5) )
+					$token_value = "'$whiteplayer_id'";
+				// Initial positions of black player
+				else if( ($x==4 && $y==5) || ($x==5 && $y==4) )
+					$token_value = "'$blackplayer_id'";
+				// Not a starting position
+				else
+					$token_value = "NULL";
+				$sql_values[] = "('$x','$y',$token_value)";
+			}
+		}
+		$sql .= implode( ',', $sql_values );
+		self::DbQuery( $sql );
 
         // Activate first player (which is in general a good idea :) )
         $this->activeNextPlayer();
@@ -115,9 +126,11 @@ class TSTemplateReversi extends Table
         // Note: you can retrieve some extra field you added for "player" table in "dbmodel.sql" if you need it.
         $sql = "SELECT player_id id, player_score score FROM player ";
         $result['players'] = self::getCollectionFromDb( $sql );
-  
-        // TODO: Gather all information about current game situation (visible by player $current_player_id).
-  
+
+		$sql = "SELECT board_x x, board_y y, board_player player
+				FROM board WHERE board_player IS NOT NULL";
+		$result['board'] = self::getObjectListFromDB( $sql );
+
         return $result;
     }
 

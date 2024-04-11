@@ -29,8 +29,14 @@ class TSTemplateReversi extends Gamegui
 	{
 		console.log( "Starting game setup" );
 
-		this.addTokenOnBoard( 2, 2, this.player_id );
-		this.addTokenOnBoard( 6, 3, this.player_id );
+		// Place the tokens on the board
+		for( let i in gamedatas.board )
+		{
+			let square = gamedatas.board[i];
+
+			if( square?.player ) // If square is defined and has a player
+				this.addTokenOnBoard( square.x, square.y, square.player );
+		}
 
 		this.setupNotifications(); // <-- Keep this line
 	}
