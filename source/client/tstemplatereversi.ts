@@ -48,6 +48,13 @@ class TSTemplateReversi extends Gamegui
 	onEnteringState(stateName: GameStateName, args: CurrentStateArgs): void
 	{
 		console.log( 'Entering state: '+stateName );
+
+		switch( stateName )
+		{
+			case 'playerTurn':
+				this.updatePossibleMoves( args.args!.possibleMoves );
+				break;
+		}
 	}
 
 	/** @gameSpecific See {@link Gamegui.onLeavingState} for more information. */
@@ -79,6 +86,32 @@ class TSTemplateReversi extends Gamegui
 
 		this.placeOnObject( `token_${x}_${y}`, `overall_player_board_${player_id}` );
 		this.slideToObject( `token_${x}_${y}`, `square_${x}_${y}` ).play();
+	}
+
+	/** Removes the 'possibleMove' class from all elements. */
+	clearPossibleMoves() {
+		document.querySelectorAll('.possibleMove').forEach(element => {
+			element.classList.remove('possibleMove');
+		});
+	}
+
+	/** Updates the squares on the board matching the possible moves. */
+	updatePossibleMoves( possibleMoves: boolean[][] )
+	{
+		this.clearPossibleMoves();
+
+		for( var x in possibleMoves )
+		{
+			for( var y in possibleMoves[ x ] )
+			{
+				let square = $(`square_${x}_${y}`);
+				if( !square )
+					throw new Error( `Unknown square element: ${x}_${y}. Make sure the board grid was set up correctly in the tpl file.` );
+				square.classList.add('possibleMove');
+			}
+		}
+
+		this.addTooltipToClass( 'possibleMove', '', _('Place a disc here') );
 	}
 
 	///////////////////////////////////////////////////

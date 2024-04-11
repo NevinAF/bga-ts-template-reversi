@@ -34,6 +34,11 @@ define("bgagame/tstemplatereversi", ["require", "exports", "ebg/core/gamegui", "
         };
         TSTemplateReversi.prototype.onEnteringState = function (stateName, args) {
             console.log('Entering state: ' + stateName);
+            switch (stateName) {
+                case 'playerTurn':
+                    this.updatePossibleMoves(args.args.possibleMoves);
+                    break;
+            }
         };
         TSTemplateReversi.prototype.onLeavingState = function (stateName) {
             console.log('Leaving state: ' + stateName);
@@ -51,6 +56,23 @@ define("bgagame/tstemplatereversi", ["require", "exports", "ebg/core/gamegui", "
             }), 'board');
             this.placeOnObject("token_".concat(x, "_").concat(y), "overall_player_board_".concat(player_id));
             this.slideToObject("token_".concat(x, "_").concat(y), "square_".concat(x, "_").concat(y)).play();
+        };
+        TSTemplateReversi.prototype.clearPossibleMoves = function () {
+            document.querySelectorAll('.possibleMove').forEach(function (element) {
+                element.classList.remove('possibleMove');
+            });
+        };
+        TSTemplateReversi.prototype.updatePossibleMoves = function (possibleMoves) {
+            this.clearPossibleMoves();
+            for (var x in possibleMoves) {
+                for (var y in possibleMoves[x]) {
+                    var square = $("square_".concat(x, "_").concat(y));
+                    if (!square)
+                        throw new Error("Unknown square element: ".concat(x, "_").concat(y, ". Make sure the board grid was set up correctly in the tpl file."));
+                    square.classList.add('possibleMove');
+                }
+            }
+            this.addTooltipToClass('possibleMove', '', _('Place a disc here'));
         };
         TSTemplateReversi.prototype.setupNotifications = function () {
             console.log('notifications subscriptions setup');
