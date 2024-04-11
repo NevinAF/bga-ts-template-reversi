@@ -76,3 +76,13 @@
 .possibleMove:hover {
 	background-color: rgba(255, 255, 255, 0.3);
 }
+
+// This overrides the #board + .token- images when the .game_style_wooden is automatically added to the page (by the user preference).
+.game_style_wooden {
+	#board {
+		background-image: url('img/wooden_board.jpg');
+	}
+	.token-white, .token-black {
+		background-image: url('img/wooden_tokens.png');
+	}
+}

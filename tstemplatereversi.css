@@ -76,3 +76,10 @@
 .possibleMove:hover {
   background-color: rgba(255, 255, 255, 0.3);
 }
+
+.game_style_wooden #board {
+  background-image: url("img/wooden_board.jpg");
+}
+.game_style_wooden .token-white, .game_style_wooden .token-black {
+  background-image: url("img/wooden_tokens.png");
+}

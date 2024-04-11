@@ -1,1 +1,1 @@
-{}
+{	"101": {		"name": "Game Style",		"needReload": true,		"values": {			"1": {				"name": "Classic",				"cssPref": "game_style_classic"			},			"2": {				"name": "Wooden",				"cssPref": "game_style_wooden"			}		},		"default": 1	}}
