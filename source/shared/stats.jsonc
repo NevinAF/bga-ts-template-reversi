@@ -10,6 +10,29 @@
 /*
  * This file is enforced by schema file located at 'bga-ts-template/template/schema'. If you are using VS Code, this schema file will be linked to this file automatically if 'generate-vscode-files' is set to true in 'template.config.jsonc. Hover over any fields for more information.
  */
-{
-	"$schema": "../../node_modules/bga-ts-template/schema/stats.schema.json"
+ {
+	"$schema": "../../node_modules/bga-ts-template/schema/stats.schema.json",
+	// All of these stats are tracked per player
+	"player": {
+		"discPlayedOnCorner": {
+			"id": 10,
+			"name": "Discs played on a corner",
+			"type": "int"
+		},
+		"discPlayedOnBorder": {
+			"id": 11,
+			"name": "Discs played on a border",
+			"type": "int"
+		},
+		"discPlayedOnCenter": {
+			"id": 12,
+			"name": "Discs played on board center part",
+			"type": "int"
+		},
+		"turnedOver": {
+			"id": 13,
+			"name": "Number of discs turned over",
+			"type": "int"
+		}
+	}
 }
