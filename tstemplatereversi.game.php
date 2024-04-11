@@ -209,6 +209,21 @@ class TSTemplateReversi extends Table
 
 			foreach( $directions as $direction )
 			{
+				// If game option '100' is set to 2 (reversi bombs)
+				if ($this->gamestate->table_globals[100] == 2)
+				{
+					$current_x = $x + $direction[0];
+					$current_y = $y + $direction[1];
+					if( $current_x<1 || $current_x>8 || $current_y<1 || $current_y>8 )
+						continue; // Out of the board => stop here for this direction
+
+					if ($board[ $current_x ][ $current_y ] !== null)
+						// push the disc to be turned over
+						$turnedOverDiscs[] = array( 'x' => $current_x, 'y' => $current_y );
+
+					continue; // Don't do standard game logic
+				}
+				// Standard...
 				// Starting from the square we want to place a disc...
 				$current_x = $x;
 				$current_y = $y;
@@ -277,8 +292,8 @@ class TSTemplateReversi extends Table
 		// This move is possible!
 
 		// Let's place a disc at x,y and return all "$returned" discs to the active player
-		$sql = "UPDATE board SET board_player='$player_id'
-				WHERE ( board_x, board_y) IN ( ";
+		$other_id = self::getUniqueValueFromDb( "SELECT player_id FROM player WHERE player_id!='$player_id'" );
+		$sql = "UPDATE board SET board_player = CASE WHEN board_player = '$player_id' THEN '$other_id' ELSE '$player_id' END WHERE (board_x, board_y) IN (";
 		foreach( $turnedOverDiscs as $turnedOver )
 			$sql .= "('".$turnedOver['x']."','".$turnedOver['y']."'),";
 		$sql .= "('$x','$y') ) ";

@@ -10,6 +10,21 @@
 /*
  * This file is enforced by schema file located at 'bga-ts-template/template/schema'. If you are using VS Code, this schema file will be linked to this file automatically if 'generate-vscode-files' is set to true in 'template.config.jsonc. Hover over any fields for more information.
  */
-{
-	"$schema": "../../node_modules/bga-ts-template/schema/gameoptions.schema.json"
+ {
+	"$schema": "../../node_modules/bga-ts-template/schema/gameoptions.schema.json",
+
+	"100": {
+		"name": "Variant",
+		"values": {
+			// This is the current rule set we have implemented
+			"1": {
+				"name": "Standard",
+				"description": "Flip all outflanked discs."
+			},
+			"2": {
+				"name": "Reversi Bombs",
+				"description": "Flip all 8 adjacent discs."
+			}
+		}
+	}
 }

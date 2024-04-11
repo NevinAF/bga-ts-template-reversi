@@ -1,1 +1,1 @@
-{}
+ {	"100": {		"name": "Variant",		"values": {			"1": {				"name": "Standard",				"description": "Flip all outflanked discs."			},			"2": {				"name": "Reversi Bombs",				"description": "Flip all 8 adjacent discs."			}		}	}}
