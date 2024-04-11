@@ -30,10 +30,16 @@ define("bgagame/tstemplatereversi", ["require", "exports", "ebg/core/gamegui", "
                 if (square === null || square === void 0 ? void 0 : square.player)
                     this.addTokenOnBoard(square.x, square.y, square.player);
             }
+            dojo.query('.square').connect('onclick', this, 'onPlayDisc');
             this.setupNotifications();
         };
         TSTemplateReversi.prototype.onEnteringState = function (stateName, args) {
             console.log('Entering state: ' + stateName);
+            switch (stateName) {
+                case 'playerTurn':
+                    this.updatePossibleMoves(args.args.possibleMoves);
+                    break;
+            }
         };
         TSTemplateReversi.prototype.onLeavingState = function (stateName) {
             console.log('Leaving state: ' + stateName);
@@ -51,6 +57,38 @@ define("bgagame/tstemplatereversi", ["require", "exports", "ebg/core/gamegui", "
             }), 'board');
             this.placeOnObject("token_".concat(x, "_").concat(y), "overall_player_board_".concat(player_id));
             this.slideToObject("token_".concat(x, "_").concat(y), "square_".concat(x, "_").concat(y)).play();
+        };
+        TSTemplateReversi.prototype.clearPossibleMoves = function () {
+            document.querySelectorAll('.possibleMove').forEach(function (element) {
+                element.classList.remove('possibleMove');
+            });
+        };
+        TSTemplateReversi.prototype.updatePossibleMoves = function (possibleMoves) {
+            this.clearPossibleMoves();
+            for (var x in possibleMoves) {
+                for (var y in possibleMoves[x]) {
+                    var square = $("square_".concat(x, "_").concat(y));
+                    if (!square)
+                        throw new Error("Unknown square element: ".concat(x, "_").concat(y, ". Make sure the board grid was set up correctly in the tpl file."));
+                    square.classList.add('possibleMove');
+                }
+            }
+            this.addTooltipToClass('possibleMove', '', _('Place a disc here'));
+        };
+        TSTemplateReversi.prototype.onPlayDisc = function (evt) {
+            evt.preventDefault();
+            if (!(evt.currentTarget instanceof HTMLElement))
+                throw new Error('evt.currentTarget is null! Make sure that this function is being connected to a DOM HTMLElement.');
+            if (!evt.currentTarget.classList.contains('possibleMove'))
+                return;
+            if (!this.checkAction('playDisc'))
+                return;
+            var _a = evt.currentTarget.id.split('_'), _square_ = _a[0], x = _a[1], y = _a[2];
+            this.ajaxcall("/".concat(this.game_name, "/").concat(this.game_name, "/playDisc.html"), {
+                x: x,
+                y: y,
+                lock: true
+            }, this, function () { });
         };
         TSTemplateReversi.prototype.setupNotifications = function () {
             console.log('notifications subscriptions setup');

@@ -38,6 +38,8 @@ class TSTemplateReversi extends Gamegui
 				this.addTokenOnBoard( square.x, square.y, square.player );
 		}
 
+		dojo.query( '.square' ).connect( 'onclick', this, 'onPlayDisc' );
+
 		this.setupNotifications(); // <-- Keep this line
 	}
 
@@ -48,6 +50,13 @@ class TSTemplateReversi extends Gamegui
 	onEnteringState(stateName: GameStateName, args: CurrentStateArgs): void
 	{
 		console.log( 'Entering state: '+stateName );
+
+		switch( stateName )
+		{
+			case 'playerTurn':
+				this.updatePossibleMoves( args.args!.possibleMoves );
+				break;
+		}
 	}
 
 	/** @gameSpecific See {@link Gamegui.onLeavingState} for more information. */
@@ -81,50 +90,61 @@ class TSTemplateReversi extends Gamegui
 		this.slideToObject( `token_${x}_${y}`, `square_${x}_${y}` ).play();
 	}
 
+	/** Removes the 'possibleMove' class from all elements. */
+	clearPossibleMoves() {
+		document.querySelectorAll('.possibleMove').forEach(element => {
+			element.classList.remove('possibleMove');
+		});
+	}
+
+	/** Updates the squares on the board matching the possible moves. */
+	updatePossibleMoves( possibleMoves: boolean[][] )
+	{
+		this.clearPossibleMoves();
+
+		for( var x in possibleMoves )
+		{
+			for( var y in possibleMoves[ x ] )
+			{
+				let square = $(`square_${x}_${y}`);
+				if( !square )
+					throw new Error( `Unknown square element: ${x}_${y}. Make sure the board grid was set up correctly in the tpl file.` );
+				square.classList.add('possibleMove');
+			}
+		}
+
+		this.addTooltipToClass( 'possibleMove', '', _('Place a disc here') );
+	}
+
+
 	///////////////////////////////////////////////////
 	//// Player's action
 	
-	/*
-		Here, you are defining methods to handle player's action (ex: results of mouse click on game objects).
-		
-		Most of the time, these methods:
-		- check the action is possible at this game state.
-		- make a call to the game server
-	*/
-	
-	/*
-	Example:
-	onMyMethodToCall1( evt: Event )
+	/** Called when a square is clicked, check if it is a possible move and send the action to the server. */
+	onPlayDisc( evt: Event )
 	{
-		console.log( 'onMyMethodToCall1' );
-
-		// Preventing default browser reaction
+		// Stop this event propagation
 		evt.preventDefault();
 
-		//	With base Gamegui class...
+		if (!(evt.currentTarget instanceof HTMLElement))
+			throw new Error('evt.currentTarget is null! Make sure that this function is being connected to a DOM HTMLElement.');
 
-		// Check that this action is possible (see "possibleactions" in states.inc.php)
-		if(!this.checkAction( 'myAction' ))
+		// Check if this is a possible move
+		if( !evt.currentTarget.classList.contains('possibleMove') )
 			return;
 
-		this.ajaxcall( "/yourgamename/yourgamename/myAction.html", { 
-			lock: true, 
-			myArgument1: arg1,
-			myArgument2: arg2,
-		}, this, function( result ) {
-			// What to do after the server call if it succeeded
-			// (most of the time: nothing)
-		}, function( is_error) {
+		// Check that this action is possible at this moment (shows error dialog if not possible)
+		if( !this.checkAction( 'playDisc' ) )
+			return;
 
-			// What to do after the server call in anyway (success or failure)
-			// (most of the time: nothing)
-		} );
+		// Get the clicked square x and y
+		// Note: square id format is "square_X_Y"
+		let [_square_, x, y] = evt.currentTarget.id.split('_');
 
-
-		//	With GameguiCookbook::Common...
-		this.ajaxAction( 'myAction', { myArgument1: arg1, myArgument2: arg2 }, (is_error) => {} );
+		this.ajaxcall( `/${this.game_name}/${this.game_name}/playDisc.html`, {
+			x, y, lock: true
+		}, this, function() {} );
 	}
-	*/
 
 	///////////////////////////////////////////////////
 	//// Reaction to cometD notifications

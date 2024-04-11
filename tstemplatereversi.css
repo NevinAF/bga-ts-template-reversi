@@ -40,3 +40,13 @@
 .tokencolor_363636 {
   background-position: -56px 0px;
 }
+
+.possibleMove {
+  background-color: rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: 100ms;
+}
+
+.possibleMove:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
