@@ -26,19 +26,45 @@
   position: absolute;
 }
 
-.token {
+.token-container {
+  background-color: transparent;
   width: 56px;
   height: 56px;
+  perspective: 250px;
   position: absolute;
+}
+
+.token-flip {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 1.2s;
+  transform-style: preserve-3d;
+  border-radius: 50%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.25);
+}
+
+.tokencolor_363636 > .token-flip {
+  transform: rotateY(180deg);
+}
+
+.token-white, .token-black {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
   background-image: url("img/tokens.png");
 }
 
-.tokencolor_cbcbcb {
+.token-white {
   background-position: 0px 0px;
 }
 
-.tokencolor_363636 {
+.token-black {
   background-position: -56px 0px;
+  transform: rotateY(180deg);
 }
 
 .possibleMove {

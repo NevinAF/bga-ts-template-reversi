@@ -292,6 +292,25 @@ class TSTemplateReversi extends Table
 				)";
 		self::DbQuery( $sql );
 
+		// Notify
+		self::notifyAllPlayers( "playDisc", clienttranslate( '${player_name} plays a disc and turns over ${returned_nbr} disc(s)' ), array(
+			'player_id' => $player_id,
+			'player_name' => self::getActivePlayerName(),
+			'returned_nbr' => count( $turnedOverDiscs ),
+			'x' => $x,
+			'y' => $y
+		) );
+
+		self::notifyAllPlayers( "turnOverDiscs", '', array(
+			'player_id' => $player_id,
+			'turnedOver' => $turnedOverDiscs
+		) );
+		
+		$newScores = self::getCollectionFromDb( "SELECT player_id, player_score FROM player", true );
+		self::notifyAllPlayers( "newScores", "", array(
+			"scores" => $newScores
+		) );
+
 		// Then, go to the next state
 		$this->gamestate->nextState( 'playDisc' );
 	}

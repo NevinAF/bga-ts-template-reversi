@@ -13,7 +13,12 @@ declare global {
 
 	/** @gameSpecific Add game specific notifications / arguments here. See {@link NotifTypes} for more information. */
 	interface NotifTypes {
-		// [name: string]: any; // Uncomment to remove type safety on notification names and arguments
+		'playDisc': { x: number, y: number, player_id: number };
+		'turnOverDiscs': {
+			player_id: number,
+			turnedOver: { x: number, y: number }[]
+		},
+		'newScores': { scores: Record<number, number> };
 	}
 
 	/** @gameSpecific Add game specific gamedatas arguments here. See {@link Gamedatas} for more information. */
