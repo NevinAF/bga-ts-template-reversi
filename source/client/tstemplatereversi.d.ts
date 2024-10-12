@@ -9,7 +9,7 @@
  */
 
 // If you have any imports/exports in this file, 'declare global' is access/merge your game specific types with framework types. 'export {};' is used to avoid possible confusion with imports/exports.
-declare global {
+declare namespace BGA {
 
 	/** @gameSpecific Add game specific notifications / arguments here. See {@link NotifTypes} for more information. */
 	interface NotifTypes {
@@ -21,5 +21,3 @@ declare global {
 		board: { x: number, y: number, player: number }[];
 	}
 }
-
-export {}; // Force this file to be a module.
