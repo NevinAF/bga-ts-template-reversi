@@ -1,31 +1,38 @@
 /*
  *------
  * BGA framework: Gregory Isabelli & Emmanuel Colin & BoardGameArena
- * TSTemplateReversi implementation : © Nevin Foster, nevin.foster2@gmail.com
+ * TSTemplatereversi implementation : © ___developers___
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
  */
+
+/**
+ * See {@link ../___source-to-template___/docs/typescript/index.md} for a LOT more information on this file.
+ * The file include alternative ways to structure this file, how to break it up into multiple files, and more.
+ */
+
+// Defines the name of this module. Same as putting this code into a file at path: bgagame/tstemplatereversi.ts
 /// <amd-module name="bgagame/tstemplatereversi"/>
 
 import Gamegui = require('ebg/core/gamegui');
 import "ebg/counter";
 
-/** The root for all of your game code. */
-class TSTemplateReversi extends Gamegui
+/** See {@link BGA.Gamegui} for more information. */
+class TSTemplatereversi extends Gamegui
 {
 	// myGlobalValue: number = 0;
 	// myGlobalArray: string[] = [];
 
-	/** @gameSpecific See {@link Gamegui} for more information. */
+	/** See {@link BGA.Gamegui} for more information. */
 	constructor(){
 		super();
 		console.log('tstemplatereversi constructor');
 	}
 
-	/** @gameSpecific See {@link Gamegui.setup} for more information. */
-	setup(gamedatas: Gamedatas): void
+	/** See {@link  BGA.Gamegui#setup} for more information. */
+	setup(gamedatas: BGA.Gamedatas): void
 	{
 		console.log( "Starting game setup" );
 
@@ -38,7 +45,7 @@ class TSTemplateReversi extends Gamegui
 				this.addTokenOnBoard( square.x, square.y, square.player );
 		}
 
-		dojo.query( '.square' ).connect( 'onclick', this, 'onPlayDisc' );
+		dojo.query<HTMLElement>( '.square' ).connect( 'onclick', this, 'onPlayDisc' );
 
 		this.setupNotifications(); // <-- Keep this line
 	}
@@ -46,27 +53,27 @@ class TSTemplateReversi extends Gamegui
 	///////////////////////////////////////////////////
 	//// Game & client states
 	
-	/** @gameSpecific See {@link Gamegui.onEnteringState} for more information. */
-	onEnteringState(stateName: GameStateName, args: CurrentStateArgs): void
+	/** See {@link BGA.Gamegui#onEnteringState} for more information. */
+	override onEnteringState(...[stateName, state]: BGA.GameStateTuple<['name', 'state']>): void
 	{
-		console.log( 'Entering state: '+stateName );
+		console.log( 'Entering state: ' + stateName );
 
 		switch( stateName )
 		{
 			case 'playerTurn':
-				this.updatePossibleMoves( args.args!.possibleMoves );
+				this.updatePossibleMoves( state.args.possibleMoves );
 				break;
 		}
 	}
 
-	/** @gameSpecific See {@link Gamegui.onLeavingState} for more information. */
-	onLeavingState(stateName: GameStateName): void
+	/** See {@link BGA.Gamegui#onLeavingState} for more information. */
+	override onLeavingState(stateName: BGA.ActiveGameState["name"]): void
 	{
-		console.log( 'Leaving state: '+stateName );
+		console.log( 'Leaving state: ' + stateName );
 	}
 
-	/** @gameSpecific See {@link Gamegui.onUpdateActionButtons} for more information. */
-	onUpdateActionButtons(stateName: GameStateName, args: AnyGameStateArgs | null): void
+	/** See {@link BGA.Gamegui#onUpdateActionButtons} for more information. */
+	override onUpdateActionButtons(...[stateName, args]: BGA.GameStateTuple<['name', 'args']>): void
 	{
 		console.log( 'onUpdateActionButtons: ' + stateName, args );
 	}
@@ -75,9 +82,9 @@ class TSTemplateReversi extends Gamegui
 	//// Utility methods
 
 	/** Adds a token matching the given player to the board at the specified location. */
-	addTokenOnBoard( x: number, y: number, player_id: number )
+	addTokenOnBoard( x: number, y: number, player_id: BGA.ID )
 	{
-		let player = this.gamedatas.players[ player_id ];
+		let player = this.gamedatas!.players[ player_id ];
 		if (!player)
 			throw new Error( 'Unknown player id: ' + player_id );
 
@@ -116,7 +123,6 @@ class TSTemplateReversi extends Gamegui
 		this.addTooltipToClass( 'possibleMove', '', _('Place a disc here') );
 	}
 
-
 	///////////////////////////////////////////////////
 	//// Player's action
 	
@@ -142,43 +148,63 @@ class TSTemplateReversi extends Gamegui
 		let [_square_, x, y] = evt.currentTarget.id.split('_');
 
 		this.ajaxcall( `/${this.game_name}/${this.game_name}/playDisc.html`, {
-			x, y, lock: true
+			x: Number(x),
+			y: Number(y),
+			lock: true
 		}, this, function() {} );
 	}
 
 	///////////////////////////////////////////////////
 	//// Reaction to cometD notifications
 
-	/** @gameSpecific See {@link Gamegui.setupNotifications} for more information. */
-	setupNotifications()
+	/** See {@link BGA.Gamegui#setupNotifications} for more information. */
+	override setupNotifications = () =>
 	{
 		console.log( 'notifications subscriptions setup' );
 		
 		// TODO: here, associate your game notifications with local methods
 		
-		// With base Gamegui class...
-		// dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
+		// Builtin example...
+		// dojo.subscribe( 'cardPlayed_1', this, "ntf_any" );
+		// dojo.subscribe( 'actionTaken', this, "ntf_actionTaken" );
+		// dojo.subscribe( 'cardPlayed_0', this, "ntf_cardPlayed" );
+		// dojo.subscribe( 'cardPlayed_1', this, "ntf_cardPlayed" );
 
-		// With GameguiCookbook::Common class...
-		// this.subscribeNotif( 'cardPlayed', this.notif_cardPlayed ); // Adds type safety to the subscription
+		//	With CommonMixin from 'cookbook/common'...
+		// this.subscribeNotif( "cardPlayed_1", this.ntf_any );
+		// this.subscribeNotif( "actionTaken", this.ntf_actionTaken );
+		// this.subscribeNotif( "cardPlayed_0", this.ntf_cardPlayed );
+		// this.subscribeNotif( "cardPlayed_1", this.ntf_cardPlayed );
 	}
 
-	/*
-	Example:
-	
-	// The argument here should be one of there things:
-	// - `Notif`: A notification with all possible arguments defined by the NotifTypes interface. See {@link Notif}.
-	// - `NotifFrom<'cardPlayed'>`: A notification matching any other notification with the same arguments as 'cardPlayed' (A type can be used here instead). See {@link NotifFrom}.
-	// - `NotifAs<'cardPlayed'>`: A notification that is explicitly a 'cardPlayed' Notif. See {@link NotifAs}.
-	notif_cardPlayed( notif: NotifFrom<'cardPlayed'> )
+	/* Example:
+
+	ntf_any( notif: BGA.Notif )
 	{
-		console.log( 'notif_cardPlayed', notif );
-		// Note: notif.args contains the arguments specified during you "notifyAllPlayers" / "notifyPlayer" PHP call
+		console.log( 'ntf_any', notif );
+		notif.args!['arg_0'];
 	}
+
+	ntf_actionTaken( notif: BGA.Notif<'actionTaken'> ) {
+		console.log( 'ntf_actionTaken', notif );
+	}
+
+	ntf_cardPlayed( notif: BGA.Notif<'cardPlayed_0' | 'cardPlayed_1'> )
+	{
+		console.log( 'ntf_cardPlayed', notif );
+		switch( notif.type ) {
+			case 'cardPlayed_0':
+				notif.args.arg_0;
+				break;
+			case 'cardPlayed_1':
+				notif.args.arg_1;
+				break;
+		}
+	}
+
 	*/
 }
 
 
-// The global 'bgagame.tstemplatereversi' class is instantiated when the page is loaded. The following code sets this variable to your game class.
-dojo.setObject( "bgagame.tstemplatereversi", TSTemplateReversi );
-// Same as: (window.bgagame ??= {}).tstemplatereversi = TSTemplateReversi;
+// The global 'bgagame.tstemplatereversi' class is instantiated when the page is loaded and used as the Gamegui.
+bgagame = { tstemplatereversi: TSTemplatereversi };
