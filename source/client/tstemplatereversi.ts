@@ -1,36 +1,45 @@
+// @ts-nocheck
 /*
  *------
  * BGA framework: Gregory Isabelli & Emmanuel Colin & BoardGameArena
- * TSTemplateReversi implementation : © Nevin Foster, nevin.foster2@gmail.com
+ * TSTemplatereversi implementation : © ___developers___
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
  */
+
+/**
+ * See {@link ../___source-to-template___/docs/typescript/index.md} for a LOT more information on this file.
+ * The file include alternative ways to structure this file, how to break it up into multiple files, and more.
+ */
+
+// Defines the name of this module. Same as putting this code into a file at path: bgagame/tstemplatereversi.ts
 /// <amd-module name="bgagame/tstemplatereversi"/>
 
 import Gamegui = require('ebg/core/gamegui');
 import "ebg/counter";
 
-/** The root for all of your game code. */
-class TSTemplateReversi extends Gamegui
+/** See {@link BGA.Gamegui} for more information. */
+class TSTemplatereversi extends Gamegui
 {
 	// myGlobalValue: number = 0;
 	// myGlobalArray: string[] = [];
 
-	/** @gameSpecific See {@link Gamegui} for more information. */
+	/** See {@link BGA.Gamegui} for more information. */
 	constructor(){
 		super();
 		console.log('tstemplatereversi constructor');
 	}
 
-	/** @gameSpecific See {@link Gamegui.setup} for more information. */
-	setup(gamedatas: Gamedatas): void
+	/** See {@link  BGA.Gamegui#setup} for more information. */
+	override setup(gamedatas: BGA.Gamedatas): void
 	{
 		console.log( "Starting game setup" );
 		
 		// Setting up player boards
-		for( var player_id in gamedatas.players )
+		var player_id: BGA.ID;
+		for(player_id in gamedatas.players)
 		{
 			var player = gamedatas.players[player_id];
 			// TODO: Setting up players boards if needed
@@ -47,32 +56,34 @@ class TSTemplateReversi extends Gamegui
 	///////////////////////////////////////////////////
 	//// Game & client states
 	
-	/** @gameSpecific See {@link Gamegui.onEnteringState} for more information. */
-	onEnteringState(stateName: GameStateName, args: CurrentStateArgs): void
+	/** See {@link BGA.Gamegui#onEnteringState} for more information. */
+	override onEnteringState(...[stateName, state]: BGA.GameStateTuple<['name', 'state']>): void
 	{
-		console.log( 'Entering state: '+stateName );
+		console.log( 'Entering state: ' + stateName );
 		
 		switch( stateName )
 		{
 		case 'dummmy':
+			// enable/disable any user interaction...
 			break;
 		}
 	}
 
-	/** @gameSpecific See {@link Gamegui.onLeavingState} for more information. */
-	onLeavingState(stateName: GameStateName): void
+	/** See {@link BGA.Gamegui#onLeavingState} for more information. */
+	override onLeavingState(stateName: BGA.ActiveGameState["name"]): void
 	{
-		console.log( 'Leaving state: '+stateName );
+		console.log( 'Leaving state: ' + stateName );
 		
 		switch( stateName )
 		{
 		case 'dummmy':
+			// enable/disable any user interaction...
 			break;
 		}
 	}
 
-	/** @gameSpecific See {@link Gamegui.onUpdateActionButtons} for more information. */
-	onUpdateActionButtons(stateName: GameStateName, args: AnyGameStateArgs | null): void
+	/** See {@link BGA.Gamegui#onUpdateActionButtons} for more information. */
+	override onUpdateActionButtons(...[stateName, args]: BGA.GameStateTuple<['name', 'args']>): void
 	{
 		console.log( 'onUpdateActionButtons: ' + stateName, args );
 
@@ -82,19 +93,14 @@ class TSTemplateReversi extends Gamegui
 		switch( stateName )
 		{
 		case 'dummmy':
-			// Add buttons if needed
+			// Add buttons to action bar...
+			// this.addActionButton( 'button_id', _('Button label'), this.onButtonClicked );
 			break;
 		}
 	}
 
 	///////////////////////////////////////////////////
 	//// Utility methods
-	
-	/*
-		Here, you can defines some utility methods that you can use everywhere in your typescript
-		script.
-	*/
-
 
 	///////////////////////////////////////////////////
 	//// Player's action
@@ -107,73 +113,104 @@ class TSTemplateReversi extends Gamegui
 		- make a call to the game server
 	*/
 	
-	/*
-	Example:
-	onMyMethodToCall1( evt: Event )
+	/* Example:
+
+	onButtonClicked( evt: Event )
 	{
-		console.log( 'onMyMethodToCall1' );
+		console.log( 'onButtonClicked' );
 
 		// Preventing default browser reaction
 		evt.preventDefault();
 
-		//	With base Gamegui class...
+		// Builtin example...
+		if(this.checkAction( 'myAction' ))
+		{
+			this.ajaxcall(
+				`/${this.game_name!}/${this.game_name!}/myAction.html`,
+				{
+					lock: true, 
+					myArgument1: arg1,
+					myArgument2: arg2,
+				},
+				this,
+				function( server_response: unknown ) {
+					// Callback only on success (no error)
+					// (for player actions, this is almost always empty)
+				}, function(error: boolean, errorMessage?: string, errorCode?: number) {
+					// What to do after the server call in anyway (success or failure)
+					// (usually catch unexpected server errors)
+				},
+			);
+		}
 
-		// Check that this action is possible (see "possibleactions" in states.inc.php)
-		if(!this.checkAction( 'myAction' ))
-			return;
+		// Builtin example with new BGA wrapper...
+		this.bgaPerformAction( 'myAction', { myArgument1: arg1, myArgument2: arg2 } );
 
-		this.ajaxcall( "/yourgamename/yourgamename/myAction.html", { 
-			lock: true, 
-			myArgument1: arg1,
-			myArgument2: arg2,
-		}, this, function( result ) {
-			// What to do after the server call if it succeeded
-			// (most of the time: nothing)
-		}, function( is_error) {
-
-			// What to do after the server call in anyway (success or failure)
-			// (most of the time: nothing)
-		} );
-
-
-		//	With GameguiCookbook::Common...
-		this.ajaxAction( 'myAction', { myArgument1: arg1, myArgument2: arg2 }, (is_error) => {} );
+		//	With CommonMixin from 'cookbook/common'...
+		this.ajaxAction(
+			'myAction',
+			{ myArgument1: arg1, myArgument2: arg2 },
+			function(error: boolean, errorMessage?: string, errorCode?: number) {
+				// What to do after the server call in anyway (success or failure)
+				// (usually catch unexpected server errors)
+			}
+		);
 	}
+
 	*/
+	
 
 	///////////////////////////////////////////////////
 	//// Reaction to cometD notifications
 
-	/** @gameSpecific See {@link Gamegui.setupNotifications} for more information. */
-	setupNotifications()
+	/** See {@link BGA.Gamegui#setupNotifications} for more information. */
+	override setupNotifications = () =>
 	{
 		console.log( 'notifications subscriptions setup' );
 		
 		// TODO: here, associate your game notifications with local methods
 		
-		// With base Gamegui class...
-		// dojo.subscribe( 'cardPlayed', this, "notif_cardPlayed" );
+		// Builtin example...
+		// dojo.subscribe( 'cardPlayed_1', this, "ntf_any" );
+		// dojo.subscribe( 'actionTaken', this, "ntf_actionTaken" );
+		// dojo.subscribe( 'cardPlayed_0', this, "ntf_cardPlayed" );
+		// dojo.subscribe( 'cardPlayed_1', this, "ntf_cardPlayed" );
 
-		// With GameguiCookbook::Common class...
-		// this.subscribeNotif( 'cardPlayed', this.notif_cardPlayed ); // Adds type safety to the subscription
+		//	With CommonMixin from 'cookbook/common'...
+		// this.subscribeNotif( "cardPlayed_1", this.ntf_any );
+		// this.subscribeNotif( "actionTaken", this.ntf_actionTaken );
+		// this.subscribeNotif( "cardPlayed_0", this.ntf_cardPlayed );
+		// this.subscribeNotif( "cardPlayed_1", this.ntf_cardPlayed );
 	}
 
-	/*
-	Example:
-	
-	// The argument here should be one of there things:
-	// - `Notif`: A notification with all possible arguments defined by the NotifTypes interface. See {@link Notif}.
-	// - `NotifFrom<'cardPlayed'>`: A notification matching any other notification with the same arguments as 'cardPlayed' (A type can be used here instead). See {@link NotifFrom}.
-	// - `NotifAs<'cardPlayed'>`: A notification that is explicitly a 'cardPlayed' Notif. See {@link NotifAs}.
-	notif_cardPlayed( notif: NotifFrom<'cardPlayed'> )
+	/* Example:
+
+	ntf_any( notif: BGA.Notif )
 	{
-		console.log( 'notif_cardPlayed', notif );
-		// Note: notif.args contains the arguments specified during you "notifyAllPlayers" / "notifyPlayer" PHP call
+		console.log( 'ntf_any', notif );
+		notif.args!['arg_0'];
 	}
+
+	ntf_actionTaken( notif: BGA.Notif<'actionTaken'> ) {
+		console.log( 'ntf_actionTaken', notif );
+	}
+
+	ntf_cardPlayed( notif: BGA.Notif<'cardPlayed_0' | 'cardPlayed_1'> )
+	{
+		console.log( 'ntf_cardPlayed', notif );
+		switch( notif.type ) {
+			case 'cardPlayed_0':
+				notif.args.arg_0;
+				break;
+			case 'cardPlayed_1':
+				notif.args.arg_1;
+				break;
+		}
+	}
+
 	*/
 }
 
 
-// The global 'bgagame.tstemplatereversi' class is instantiated when the page is loaded. The following code sets this variable to your game class.
-dojo.setObject( "bgagame.tstemplatereversi", TSTemplateReversi );
-// Same as: (window.bgagame ??= {}).tstemplatereversi = TSTemplateReversi;
+// The global 'bgagame.tstemplatereversi' class is instantiated when the page is loaded and used as the Gamegui.
+bgagame = { tstemplatereversi: TSTemplatereversi };
