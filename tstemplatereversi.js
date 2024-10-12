@@ -20,6 +20,15 @@ define("bgagame/tstemplatereversi", ["require", "exports", "ebg/core/gamegui", "
         __extends(TSTemplateReversi, _super);
         function TSTemplateReversi() {
             var _this = _super.call(this) || this;
+            _this.setupNotifications = function () {
+                console.log('notifications subscriptions setup');
+                dojo.subscribe('playDisc', _this, "notif_playDisc");
+                _this.notifqueue.setSynchronous('playDisc', 500);
+                dojo.subscribe('turnOverDiscs', _this, "notif_turnOverDiscs");
+                _this.notifqueue.setSynchronous('turnOverDiscs', 1000);
+                dojo.subscribe('newScores', _this, "notif_newScores");
+                _this.notifqueue.setSynchronous('newScores', 500);
+            };
             console.log('tstemplatereversi constructor');
             return _this;
         }
@@ -33,18 +42,28 @@ define("bgagame/tstemplatereversi", ["require", "exports", "ebg/core/gamegui", "
             dojo.query('.square').connect('onclick', this, 'onPlayDisc');
             this.setupNotifications();
         };
-        TSTemplateReversi.prototype.onEnteringState = function (stateName, args) {
+        TSTemplateReversi.prototype.onEnteringState = function () {
+            var _a = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                _a[_i] = arguments[_i];
+            }
+            var stateName = _a[0], state = _a[1];
             console.log('Entering state: ' + stateName);
             switch (stateName) {
                 case 'playerTurn':
-                    this.updatePossibleMoves(args.args.possibleMoves);
+                    this.updatePossibleMoves(state.args.possibleMoves);
                     break;
             }
         };
         TSTemplateReversi.prototype.onLeavingState = function (stateName) {
             console.log('Leaving state: ' + stateName);
         };
-        TSTemplateReversi.prototype.onUpdateActionButtons = function (stateName, args) {
+        TSTemplateReversi.prototype.onUpdateActionButtons = function () {
+            var _a = [];
+            for (var _i = 0; _i < arguments.length; _i++) {
+                _a[_i] = arguments[_i];
+            }
+            var stateName = _a[0], args = _a[1];
             console.log('onUpdateActionButtons: ' + stateName, args);
         };
         TSTemplateReversi.prototype.addTokenOnBoard = function (x, y, player_id) {
@@ -85,19 +104,10 @@ define("bgagame/tstemplatereversi", ["require", "exports", "ebg/core/gamegui", "
                 return;
             var _a = evt.currentTarget.id.split('_'), _square_ = _a[0], x = _a[1], y = _a[2];
             this.ajaxcall("/".concat(this.game_name, "/").concat(this.game_name, "/playDisc.html"), {
-                x: x,
-                y: y,
+                x: Number(x),
+                y: Number(y),
                 lock: true
             }, this, function () { });
-        };
-        TSTemplateReversi.prototype.setupNotifications = function () {
-            console.log('notifications subscriptions setup');
-            dojo.subscribe('playDisc', this, "notif_playDisc");
-            this.notifqueue.setSynchronous('playDisc', 500);
-            dojo.subscribe('turnOverDiscs', this, "notif_turnOverDiscs");
-            this.notifqueue.setSynchronous('turnOverDiscs', 1000);
-            dojo.subscribe('newScores', this, "notif_newScores");
-            this.notifqueue.setSynchronous('newScores', 500);
         };
         TSTemplateReversi.prototype.notif_playDisc = function (notif) {
             this.clearPossibleMoves();

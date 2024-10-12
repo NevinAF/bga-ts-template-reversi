@@ -25,7 +25,7 @@ class TSTemplateReversi extends Gamegui
 	}
 
 	/** @gameSpecific See {@link Gamegui.setup} for more information. */
-	setup(gamedatas: Gamedatas): void
+	setup(gamedatas: BGA.Gamedatas): void
 	{
 		console.log( "Starting game setup" );
 
@@ -38,7 +38,7 @@ class TSTemplateReversi extends Gamegui
 				this.addTokenOnBoard( square.x, square.y, square.player );
 		}
 
-		dojo.query( '.square' ).connect( 'onclick', this, 'onPlayDisc' );
+		dojo.query<HTMLElement>( '.square' ).connect( 'onclick', this, 'onPlayDisc' );
 
 		this.setupNotifications(); // <-- Keep this line
 	}
@@ -46,27 +46,27 @@ class TSTemplateReversi extends Gamegui
 	///////////////////////////////////////////////////
 	//// Game & client states
 	
-	/** @gameSpecific See {@link Gamegui.onEnteringState} for more information. */
-	onEnteringState(stateName: GameStateName, args: CurrentStateArgs): void
+	/** @gameSpecific See {@link Gamegui#onEnteringState} for more information. */
+	onEnteringState(...[stateName, state]: BGA.GameStateTuple<['name', 'state']>): void
 	{
 		console.log( 'Entering state: '+stateName );
 
 		switch( stateName )
 		{
 			case 'playerTurn':
-				this.updatePossibleMoves( args.args!.possibleMoves );
+				this.updatePossibleMoves( state.args.possibleMoves );
 				break;
 		}
 	}
 
-	/** @gameSpecific See {@link Gamegui.onLeavingState} for more information. */
-	onLeavingState(stateName: GameStateName): void
+	/** @gameSpecific See {@link Gamegui#onLeavingState} for more information. */
+	onLeavingState(stateName: BGA.ActiveGameState["name"]): void
 	{
 		console.log( 'Leaving state: '+stateName );
 	}
 
-	/** @gameSpecific See {@link Gamegui.onUpdateActionButtons} for more information. */
-	onUpdateActionButtons(stateName: GameStateName, args: AnyGameStateArgs | null): void
+	/** @gameSpecific See {@link Gamegui#onUpdateActionButtons} for more information. */
+	onUpdateActionButtons(...[stateName, args]: BGA.GameStateTuple<['name', 'args']>): void
 	{
 		console.log( 'onUpdateActionButtons: ' + stateName, args );
 	}
@@ -77,7 +77,7 @@ class TSTemplateReversi extends Gamegui
 	/** Adds a token matching the given player to the board at the specified location. */
 	addTokenOnBoard( x: number, y: number, player_id: number )
 	{
-		let player = this.gamedatas.players[ player_id ];
+		let player = this.gamedatas!.players[ player_id ];
 		if (!player)
 			throw new Error( 'Unknown player id: ' + player_id );
 
@@ -142,7 +142,9 @@ class TSTemplateReversi extends Gamegui
 		let [_square_, x, y] = evt.currentTarget.id.split('_');
 
 		this.ajaxcall( `/${this.game_name}/${this.game_name}/playDisc.html`, {
-			x, y, lock: true
+			x: Number(x),
+			y: Number(y),
+			lock: true
 		}, this, function() {} );
 	}
 
@@ -150,7 +152,7 @@ class TSTemplateReversi extends Gamegui
 	//// Reaction to cometD notifications
 
 	/** @gameSpecific See {@link Gamegui.setupNotifications} for more information. */
-	setupNotifications()
+	setupNotifications = () =>
 	{
 		console.log( 'notifications subscriptions setup' );
 
@@ -162,13 +164,13 @@ class TSTemplateReversi extends Gamegui
 		this.notifqueue.setSynchronous( 'newScores', 500 );
 	}
 
-	notif_playDisc( notif: NotifAs<'playDisc'> )
+	notif_playDisc( notif: BGA.Notif<'playDisc'> )
 	{
 		this.clearPossibleMoves();
 		this.addTokenOnBoard( notif.args.x, notif.args.y, notif.args.player_id );
 	}
 
-	notif_turnOverDiscs( notif: NotifAs<'turnOverDiscs'> )
+	notif_turnOverDiscs( notif: BGA.Notif<'turnOverDiscs'> )
 	{
 		// Change the color of the turned over discs
 		for( var i in notif.args.turnedOver )
@@ -184,7 +186,7 @@ class TSTemplateReversi extends Gamegui
 		}
 	}
 
-	notif_newScores( notif: NotifAs<'newScores'> )
+	notif_newScores( notif: BGA.Notif<'newScores'> )
 	{
 		for( var player_id in notif.args.scores )
 		{
